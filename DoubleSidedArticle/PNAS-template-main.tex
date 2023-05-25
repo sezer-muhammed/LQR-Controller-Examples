@@ -1,0 +1,124 @@
+\documentclass[10pt,twocolumn,twoside,lineno]{pnas-new}
+% Use the lineno option to display guide line numbers if required.
+\usepackage{noto}
+
+\templatetype{pnasresearcharticle} % Choose template 
+% {pnasresearcharticle} = Template for a two-column research article
+% {pnasmathematics} %= Template for a one-column mathematics article
+% {pnasinvited} %= Template for a PNAS invited submission
+
+\title{The LQR Controller}
+
+% Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
+\author[a,b,1]{Muhammed Sezer}
+\author[a,b,2]{Şevval Belkıs Dikkaya} 
+
+\affil[a]{Middle East Technical University}
+\affil[b]{Orion Robotics Ltd.}
+
+% Please give the surname of the lead author for the running footer
+\leadauthor{Sezer} 
+
+% Please add here a significance statement to explain the relevance of your work
+\significancestatement{This document's significance lies in its comprehensive exploration of the Linear Quadratic Regulator (LQR) controller, a key tool in the realm of system control.}
+
+% Please include corresponding author, author contribution and author declaration information
+\authorcontributions{Please provide details of author contributions here.}
+\authordeclaration{Please declare any conflict of interest here.}
+\equalauthors{\textsuperscript{1}A.O.(Author One) and A.T. (Author Two) contributed equally to this work (remove if not applicable).}
+\correspondingauthor{\textsuperscript{2}To whom correspondence should be addressed. E-mail: author.two\@email.com}
+
+% Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
+\keywords{Linear Quadratic Regulator $|$ LQR $|$ Control Theory $|$ System Control $|$ Practical Application $|$ Simulation $|$ Performance Analysis $|$ Case Study $|$ PID Controller $|$ Controller Comparison}
+
+
+\begin{abstract}
+       In this easy-to-follow guide on the Linear Quadratic Regulator (LQR) controller, you'll learn about its practical and theoretical aspects. This document takes you beyond the surprise of just how much better it is than a PID controller. It equips you with the knowledge to not only run simulations but also to apply it in real-world scenarios. From understanding the underlying principles to discussing practical applications, and even a step-by-step demonstration via a computer simulation, this guide covers it all. It also features a comparative discussion that puts LQR up against other popular controllers, so you know exactly where it stands. Whether you're a beginner or an experienced practitioner, this guide aims to give you a complete picture of the LQR controller, and how it can be a game-changer in tackling complex control problems.
+\end{abstract}
+
+\dates{\today}
+\doi{\url{www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{firststyle}
+\ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
+
+% If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
+\dropcap{H}ave you ever been working on a problem and thought, "If only I had a better way to manage this system"? Then prepare to discover the Linear Quadratic Regulator (LQR) controller – an innovative tool that has revolutionized the way we control systems.
+
+Our journey will begin with the intriguing theory behind the LQR controller. Picture a landscape with mountains, valleys, and complex terrains. Now imagine trying to navigate this landscape in the most efficient way possible, taking into account not only your path but also the energy you spend on the journey. This is the essence of what the LQR controller does, making it a unique tool in the world of control systems.
+
+Once you've grasped the intriguing science behind it, we'll dive into real-world applications. This is where the magic really happens. Whether it's making a robot walk with uncanny balance, helping a drone navigate through a forest, or improving a vehicle's suspension system for a smoother ride, the LQR controller steps up to the challenge.
+
+From there, we'll immerse ourselves in a hands-on simulation, bringing the theory and application to life. You'll see first-hand how the LQR controller performs, and we'll delve into the analysis of its results. The practical, visual experience will make the concepts click in a way that no amount of theory could.
+
+As the journey nears its end, you'll discover how the LQR stacks up against other controllers, like the ubiquitous PID. The comparison might surprise you, highlighting the unique strengths of the LQR controller and showcasing why it's such an asset in the field of control systems.
+
+So buckle up and get ready for an exciting deep-dive into the world of the LQR controller. This guide will not only answer your questions but will also leave you marveling at the possibilities that the LQR controller opens up in the world of system control.
+
+\section*{Practical Applications}
+
+\subsection*{When to use an LQR Controller}
+The beauty of the LQR controller lies in its versatility, making it suitable for various scenarios in system control. Here are a few instances where an LQR controller shines:
+
+\begin{itemize}
+    \item \textbf{Complex Systems:} When dealing with systems that have multiple inputs and outputs, the LQR controller's ability to handle interconnected dynamics makes it a powerful choice.
+    \item \textbf{Optimal Control:} If the goal is to optimize system performance while considering specific constraints, such as minimizing energy consumption or maximizing stability, the LQR controller can provide an elegant solution.
+    \item \textbf{State Estimation:} The LQR controller works exceptionally well in conjunction with state estimation techniques, such as Kalman filters, allowing for accurate control even when some system states are not directly measurable.
+    \item \textbf{Time-Varying Systems:} When the system parameters change over time, the adaptive nature of the LQR controller enables it to adapt and maintain optimal control despite these variations.
+\end{itemize}
+
+\subsection*{Implementation of an LQR Controller}
+Implementing an LQR controller involves a series of steps:
+
+\begin{enumerate}
+    \item \textbf{System Modeling:} Develop a mathematical model that describes the dynamics of the system you want to control. This model should capture the relationships between the system's inputs, outputs, and states.
+    \item \textbf{Cost Function Design:} Define a suitable cost function that quantifies the performance objectives you want to achieve. This cost function typically consists of a quadratic term representing the control effort and a quadratic term reflecting the deviation from desired states.
+    \item \textbf{Obtaining the LQR Matrices:} Solve the algebraic Riccati equation to compute the optimal control gain matrices: the state feedback gain matrix and the feedforward gain matrix.
+    \item \textbf{Controller Design:} Combine the computed gain matrices with a state estimator (if needed) to construct the complete LQR controller.
+\end{enumerate}
+
+
+\section*{Theoretical Background}
+
+\subsubsection*{Linear Systems}
+Explain the concept of linear systems, emphasizing their mathematical representation and key properties, such as superposition and time-invariance.
+
+\subsubsection*{Quadratic Cost Function}
+Define the quadratic cost function used in the LQR control problem, highlighting its significance in capturing both control effort and deviation from desired states.
+
+\subsection*{Derivation of the LQR Controller}
+
+\subsubsection*{The LQR Control Problem}
+Introduce the LQR control problem as a specific instance of optimal control, emphasizing the objective of minimizing a quadratic cost function subject to linear system dynamics.
+
+\subsubsection*{Derivation Steps}
+Walk through the steps of deriving the LQR controller, including the formulation of the cost function, the application of the Hamilton-Jacobi-Bellman equation, and the solution of the algebraic Riccati equation.
+
+\subsection*{Properties of the LQR Controller}
+
+\subsubsection*{Stability}
+Explain the stability properties of the LQR controller, discussing the role of the LQR gain matrices in ensuring stability and highlighting the conditions for stability.
+
+\subsubsection*{Optimality}
+Discuss the optimality of the LQR controller, showcasing its ability to minimize the quadratic cost function and achieve optimal system performance.
+
+\subsubsection*{Robustness}
+Address the robustness of the LQR controller to model uncertainties and disturbances, highlighting its sensitivity to model accuracy and potential limitations.
+
+\subsubsection*{Performance Trade-offs}
+Explore the trade-offs in performance achieved by the LQR controller, such as the balance between control effort and deviation from desired states.
+
+
+\showmatmethods{} % Display the Materials and Methods section
+
+\acknow{Please include your acknowledgments here, set in a single paragraph. Please do not include any acknowledgments in the Supporting Information, or anywhere else in the manuscript.}
+
+\showacknow{} % Display the acknowledgments section
+
+% Bibliography
+\bibliography{pnas-sample}
+
+\end{document}
