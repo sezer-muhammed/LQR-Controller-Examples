@@ -1,4 +1,4 @@
-\documentclass[10pt,twocolumn,twoside,lineno]{pnas-new}
+\documentclass[11pt,twocolumn,twoside,lineno]{pnas-new}
 % Use the lineno option to display guide line numbers if required.
 \usepackage{noto}
 
@@ -10,10 +10,10 @@
 \title{The LQR Controller}
 
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
-\author[a,b,1]{Muhammed Sezer}
-\author[a,b,2]{Şevval Belkıs Dikkaya} 
+\author[a,b]{Muhammed Sezer}
+\author[a,b]{Şevval Belkıs Dikkaya} 
 
-\affil[a]{Middle East Technical University}
+\affil[a]{\href{https://www.metu.edu.tr/}{Middle East Technical University}}
 \affil[b]{Orion Robotics Ltd.}
 
 % Please give the surname of the lead author for the running footer
@@ -29,7 +29,7 @@
 \correspondingauthor{\textsuperscript{2}To whom correspondence should be addressed. E-mail: author.two\@email.com}
 
 % Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
-\keywords{Linear Quadratic Regulator $|$ LQR $|$ Control Theory $|$ System Control $|$ Practical Application $|$ Simulation $|$ Performance Analysis $|$ Case Study $|$ PID Controller $|$ Controller Comparison}
+\keywords{Linear Quadratic Regulator $|$ LQR $|$ Control Theory $|$ System Control $|$ Practical Application $|$ Simulation $|$ Performance Analysis $|$ Case Study}
 
 
 \begin{abstract}
@@ -37,7 +37,6 @@
 \end{abstract}
 
 \dates{\today}
-\doi{\url{www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX}}
 
 \begin{document}
 
@@ -46,70 +45,44 @@
 \ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
 
 % If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
-\dropcap{H}ave you ever been working on a problem and thought, "If only I had a better way to manage this system"? Then prepare to discover the Linear Quadratic Regulator (LQR) controller – an innovative tool that has revolutionized the way we control systems.
+\dropcap{I}magine transforming a teetering robot into a graceful performer, guiding a drone through an obstacle-strewn forest, or smoothing out a vehicle's ride with an almost magical touch. That's the LQR controller – turning challenges into walk-in-the-park realities.
 
-Our journey will begin with the intriguing theory behind the LQR controller. Picture a landscape with mountains, valleys, and complex terrains. Now imagine trying to navigate this landscape in the most efficient way possible, taking into account not only your path but also the energy you spend on the journey. This is the essence of what the LQR controller does, making it a unique tool in the world of control systems.
+Our journey will fuse theory with exciting real-world applications and immersive hands-on simulations. Picture witnessing the might of the LQR controller at work, a practical spectacle making intricate theory crystalline clear.
 
-Once you've grasped the intriguing science behind it, we'll dive into real-world applications. This is where the magic really happens. Whether it's making a robot walk with uncanny balance, helping a drone navigate through a forest, or improving a vehicle's suspension system for a smoother ride, the LQR controller steps up to the challenge.
-
-From there, we'll immerse ourselves in a hands-on simulation, bringing the theory and application to life. You'll see first-hand how the LQR controller performs, and we'll delve into the analysis of its results. The practical, visual experience will make the concepts click in a way that no amount of theory could.
-
-As the journey nears its end, you'll discover how the LQR stacks up against other controllers, like the ubiquitous PID. The comparison might surprise you, highlighting the unique strengths of the LQR controller and showcasing why it's such an asset in the field of control systems.
+Get ready to dive into the riveting realm of the LQR controller, a voyage that promises not just answers but a fascinating glimpse into future possibilities in system control. Welcome aboard!
 
 So buckle up and get ready for an exciting deep-dive into the world of the LQR controller. This guide will not only answer your questions but will also leave you marveling at the possibilities that the LQR controller opens up in the world of system control.
 
-\section*{Practical Applications}
+\section*{Introduction}
+\subsection*{The Advent of the LQR Controller}
 
-\subsection*{When to use an LQR Controller}
-The beauty of the LQR controller lies in its versatility, making it suitable for various scenarios in system control. Here are a few instances where an LQR controller shines:
+The Linear Quadratic Regulator (LQR) controller owes its birth to the era of the Space Race in the mid-20th century. As nations strove to conquer space, the need arose for control strategies capable of handling complex, nonlinear, and multi-input-multi-output systems typical of spacecraft.
 
-\begin{itemize}
-    \item \textbf{Complex Systems:} When dealing with systems that have multiple inputs and outputs, the LQR controller's ability to handle interconnected dynamics makes it a powerful choice.
-    \item \textbf{Optimal Control:} If the goal is to optimize system performance while considering specific constraints, such as minimizing energy consumption or maximizing stability, the LQR controller can provide an elegant solution.
-    \item \textbf{State Estimation:} The LQR controller works exceptionally well in conjunction with state estimation techniques, such as Kalman filters, allowing for accurate control even when some system states are not directly measurable.
-    \item \textbf{Time-Varying Systems:} When the system parameters change over time, the adaptive nature of the LQR controller enables it to adapt and maintain optimal control despite these variations.
-\end{itemize}
+In the early 1960s, engineers at NASA sought to develop a control strategy that not only provided stability but also optimally controlled the system performance. They were dealing with the challenge of guiding spacecrafts, where the task was not just to stabilize the system but also to minimize fuel consumption, a critical parameter in space travel. This marked the genesis of the optimal control theory, culminating in the development of the LQR controller.
 
-\subsection*{Implementation of an LQR Controller}
-Implementing an LQR controller involves a series of steps:
+The LQR controller provided a promising solution to these complex problems. Its underlying mathematics, based on the solution to the Algebraic Riccati Equation (ARE), allowed the control engineers to find an optimal balance between performance (such as minimizing deviation from a desired trajectory) and control effort (such as fuel consumption). The LQR controller elegantly encapsulated these two aspects into a single quadratic cost function, hence its name - Linear Quadratic Regulator.
 
-\begin{enumerate}
-    \item \textbf{System Modeling:} Develop a mathematical model that describes the dynamics of the system you want to control. This model should capture the relationships between the system's inputs, outputs, and states.
-    \item \textbf{Cost Function Design:} Define a suitable cost function that quantifies the performance objectives you want to achieve. This cost function typically consists of a quadratic term representing the control effort and a quadratic term reflecting the deviation from desired states.
-    \item \textbf{Obtaining the LQR Matrices:} Solve the algebraic Riccati equation to compute the optimal control gain matrices: the state feedback gain matrix and the feedforward gain matrix.
-    \item \textbf{Controller Design:} Combine the computed gain matrices with a state estimator (if needed) to construct the complete LQR controller.
-\end{enumerate}
+Since its inception, the LQR controller has been applied to myriad domains beyond aerospace. It has played a significant role in fields as diverse as economics, for optimal allocation of resources; in power systems, for optimal power flow control; in robotics, for efficient and stable movement control; and in automotive systems, for enhancing ride comfort and stability, to name a few.
 
+The beauty of the LQR controller lies in its theoretical elegance, its promise of optimal performance, and its adaptability to a wide range of control problems. This has ensured the LQR controller's continued relevance and its esteemed position in the world of control systems, from its advent during the Space Race to the present day. 
 
-\section*{Theoretical Background}
+\subsection*{Purpose of the Paper}
 
-\subsubsection*{Linear Systems}
-Explain the concept of linear systems, emphasizing their mathematical representation and key properties, such as superposition and time-invariance.
+This paper aims to serve as a comprehensive guide to the Linear Quadratic Regulator (LQR) controller. Our journey starts with exploring the theory behind this powerful tool, where we delve into its mathematical backbone, operational principles, and the inherent trade-offs involved in its design. While we will discuss abstract mathematical concepts, we strive to present them in an intuitive and accessible manner, providing readers with a concrete understanding of how the LQR controller operates.
 
-\subsubsection*{Quadratic Cost Function}
-Define the quadratic cost function used in the LQR control problem, highlighting its significance in capturing both control effort and deviation from desired states.
+Moreover, this paper aims to transcend the theoretical realm and venture into the practical world. Using the example of a double pendulum, a classical problem in physics that presents intriguing dynamics and challenges for control, we illustrate the application of the LQR controller. Our goal here is to demonstrate how the theoretical constructs are put into action, and how the LQR controller navigates the complex dynamics of the double pendulum.
 
-\subsection*{Derivation of the LQR Controller}
+In essence, the paper's purpose is not just to provide readers with knowledge about the LQR controller, but to equip them with the ability to understand its application in real-world scenarios. It aims to bridge the gap between theory and practice, making the understanding of the LQR controller holistic and application-oriented.
 
-\subsubsection*{The LQR Control Problem}
-Introduce the LQR control problem as a specific instance of optimal control, emphasizing the objective of minimizing a quadratic cost function subject to linear system dynamics.
+\section*{LQR Controller: A Theoretical Perspective}
 
-\subsubsection*{Derivation Steps}
-Walk through the steps of deriving the LQR controller, including the formulation of the cost function, the application of the Hamilton-Jacobi-Bellman equation, and the solution of the algebraic Riccati equation.
+\subsection*{LQR Control Principle}
 
-\subsection*{Properties of the LQR Controller}
+At its core, the Linear Quadratic Regulator (LQR) operates on the principle of optimal control. In this context, "optimal" denotes the objective of minimizing a specific cost function. This cost function, constructed as a quadratic form, characterizes the trade-off between the state deviation from a desired reference and the control effort required to achieve that state.
 
-\subsubsection*{Stability}
-Explain the stability properties of the LQR controller, discussing the role of the LQR gain matrices in ensuring stability and highlighting the conditions for stability.
+To envision the principle of operation, consider the analogy of driving a car. The aim is to reach the destination (desired state) with minimum fuel consumption (control effort) and in the least time possible (state deviation). While a faster speed might help reduce the travel time, it would increase fuel consumption. Conversely, driving at a slower pace might conserve fuel but extend travel time. The LQR controller, analogous to an intelligent driving assistant, continually adjusts the speed (control input) to find an optimal balance between these conflicting objectives.
 
-\subsubsection*{Optimality}
-Discuss the optimality of the LQR controller, showcasing its ability to minimize the quadratic cost function and achieve optimal system performance.
-
-\subsubsection*{Robustness}
-Address the robustness of the LQR controller to model uncertainties and disturbances, highlighting its sensitivity to model accuracy and potential limitations.
-
-\subsubsection*{Performance Trade-offs}
-Explore the trade-offs in performance achieved by the LQR controller, such as the balance between control effort and deviation from desired states.
+The brilliance of the LQR controller lies in its ability to make such optimal decisions at every instant, taking into account the current state of the system. This enables it to provide dynamic control, continuously adapting to changes in the system and its environment. As a result, the LQR controller stands out in scenarios where an optimal trade-off between performance and control effort is crucial.
 
 
 \showmatmethods{} % Display the Materials and Methods section
@@ -119,6 +92,7 @@ Explore the trade-offs in performance achieved by the LQR controller, such as th
 \showacknow{} % Display the acknowledgments section
 
 % Bibliography
-\bibliography{pnas-sample}
+\bibliography{export}
+
 
 \end{document}
