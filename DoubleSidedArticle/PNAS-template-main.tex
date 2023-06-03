@@ -10,11 +10,11 @@
 \title{The LQR Controller}
 
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
-\author[a,b]{Muhammed Sezer}
+\author[a,b]{\href{https://github.com/sezer-muhammed?tab=repositories}{Muhammed Sezer}}
 \author[a,b]{Şevval Belkıs Dikkaya} 
 
 \affil[a]{\href{https://www.metu.edu.tr/}{Middle East Technical University}}
-\affil[b]{Orion Robotics Ltd.}
+\affil[b]{\href{https://www.orionrobotics.org}{Orion Robotics Ltd.}}
 
 % Please give the surname of the lead author for the running footer
 \leadauthor{Sezer} 
@@ -399,7 +399,63 @@ P &= m(l\dot{\theta}^2\cos\theta + l\ddot{\theta}\sin\theta + g)
 
 We can now represent these equations within a simulation environment. The simulation environment can work directly with nonlinear equations, so it is unnecessary to linearize these equations.
 
-\subsection{Derivation of State-Space Equations}
+\subsection{State Space Deriving}
+The linearized equations of motion can also be expressed in a state-space form by rearranging them into a set of first-order differential equations. Since the equations are linear, they can be represented in the standard matrix form as follows:
+
+\begin{equation}
+\begin{bmatrix}
+\dot{x}\\ 
+\ddot{x}\\ 
+\dot{\phi}\\ 
+\ddot{\phi}
+\end{bmatrix} 
+=
+\begin{bmatrix}
+0&1&0&0\\
+0&\frac{-(I+ml^2)b}{I(M+m)+Mml^2}&\frac{m^2gl^2}{I(M+m)+Mml^2}&0\\
+0&0&0&1\\
+0&\frac{-mlb}{I(M+m)+Mml^2}&\frac{mgl(M+m)}{I(M+m)+Mml^2}&0
+\end{bmatrix}
+\begin{bmatrix}
+x\\ 
+\dot{x}\\ 
+\phi\\ 
+\dot{\phi}
+\end{bmatrix}
++
+\begin{bmatrix}
+0\\
+\frac{I+ml^2}{I(M+m)+Mml^2}\\
+0\\
+\frac{ml}{I(M+m)+Mml^2}
+\end{bmatrix}
+u
+\end{equation}
+
+The output vector, $\mathbf{y}$, is defined as:
+
+\begin{equation}
+\mathbf{y} =
+\begin{bmatrix}
+1&0&0&0\\
+0&0&1&0
+\end{bmatrix}
+\begin{bmatrix}
+x\\ 
+\dot{x}\\ 
+\phi\\ 
+\dot{\phi}
+\end{bmatrix}
++
+\begin{bmatrix}
+0\\
+0
+\end{bmatrix}
+u
+\end{equation}
+
+In the $C$ matrix, the first row represents the cart's position while the second row represents the pendulum's deviation from its equilibrium position. The cart's position is the first element of the output vector $\mathbf{y}$, and the pendulum's deviation from equilibrium is the second element of $\mathbf{y}$.
+
 
 \subsection{State-Space Equations}
 
@@ -436,10 +492,129 @@ From the main problem, the dynamic equations of the inverted pendulum system in 
 \end{bmatrix}u \tag{2}
 \end{align}
 
+\newpage
+
+\section{System Simulations}
+In our study, we utilize Python, a powerful high-level programming language, to simulate our system. Through our simulations, we are able to gain insights into the behavior of the system given different initial conditions.
+
+In the first scenario, we consider initial conditions where every parameter is zero. Under these conditions, the system remains in a state of steady-state equilibrium. This result is to be expected, as the system parameters have not been perturbed, and so there is no mechanism to initiate movement or change. The steady-state equilibrium condition is a crucial insight, demonstrating that in the absence of any external stimulus or internal perturbations, the system remains stable.
+
+In a second scenario, we introduce a slight disturbance in the starting angle. With this small change, the behavior of the system is drastically different. The effect of this slight change in the initial angle compounds over time, leading to an exponential increase. This is a characteristic behavior of unstable systems. 
+
+While the simulation predicts the effect to grow towards infinity, it is critical to remember that our model is a linearized approximation of the true system. We linearized the system around the perpendicular position, which serves as the equilibrium point. As the system deviates farther from this equilibrium, the linear approximation becomes less accurate, and thus the behavior predicted by the model—unbounded growth—would not occur in reality. Instead, we would expect the system to oscillate.
+
+This discrepancy underscores the limitations of linear models and the importance of understanding the system's true non-linear dynamics. However, the advantage of such models is their simplicity and tractability, which make them a powerful tool for gaining initial insights and for control design, especially for systems that operate around a specific operating point.
+
+As shown in Figure \ref{fig:system_sim}, the system simulation results illustrate these points clearly.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{simulations/system_simulation.png}
+\caption{Simulation of the system under different initial conditions. The blue line represents the system starting at a steady state (0,0,0,0). The orange line represents the system with a slight disturbance in velocity (0.001,0,0,0). The green line depicts the system with a disturbance in angle (0,0,0.0001,0).}
+\label{fig:system_sim}
+\end{figure}
+
+\section{Implementation of LQR Controller}
+
+The LQR gain matrix $K$ is calculated by using the Python Control Systems Library function \texttt{control.lqr}. This function solves the continuous-time Algebraic Riccati equation (CARE) or discrete-time Algebraic Riccati equation (DARE), based on the nature of the system. The function \texttt{control.lqr} requires the state-space model of the system, and the $Q$ and $R$ matrices, as inputs.
+
+With the gain matrix $K$ obtained, the control law $u = -Kx$ is implemented. The control law is used to update the control inputs at each time step in the simulation, which in turn influences the system's state evolution.
+
+Figure \ref{fig:lqr_response} illustrates the response of the system with the LQR controller. As we can see, the LQR controller effectively stabilizes the pendulum in the upright position.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{simulations/lqr_response.png}
+\caption{Response of the system under the control of the LQR controller.}
+\label{fig:lqr_response}
+\end{figure}
+
+The implementation of the LQR controller exhibits its ability to handle multi-input, multi-output (MIMO) systems, while ensuring stability and robustness. It does this by finding the optimal control law that minimizes the cost function, balancing between the control effort and the state deviation. This makes LQR a versatile and powerful controller for a variety of systems.
+
+\section{Exploring Different LQR Parameters}
+
+In LQR controller design, we can adjust the weighting matrices Q and R to emphasize certain control objectives. The matrix Q is used to weigh the states, whereas R is used to weigh the control efforts. 
+
+As a result, changing these matrices affects the control behavior of the system. We performed simulations using high values for elements of the Q matrix (high Q) and high values for elements of the R matrix (high R) to illustrate their impact on system behavior.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{simulations/high_q_rate.png}
+    \caption{System response with high Q. In this case, the states are heavily penalized, and the controller works hard to keep the states near the desired values. This may lead to aggressive control action.}
+    \label{fig:high_q}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{simulations/high_r_rate.png}
+    \caption{System response with high R. In this scenario, the control effort is heavily penalized, and the controller avoids large control actions. This might lead to slower convergence to the desired state, but it also means less energy consumption and less aggressive behavior.}
+    \label{fig:high_r}
+\end{figure}
+
+As mentioned earlier, changing these matrices affects the control behavior of the system. Here, we explore different LQR parameters and their impact on control effort. Control effort refers to the magnitude of the control signal required to stabilize the system.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{simulations/control_effort.png}
+    \caption{Control effort for different LQR parameters. The blue line represents the control effort with normal Q and R matrices. The red line corresponds to a high Q value, and the green line corresponds to a high R value.}
+    \label{fig:control_effort}
+\end{figure}
+
+From Figure \ref{fig:control_effort}, we observe that the control effort varies with different LQR parameter settings. A smaller control effort signifies a less aggressive control action, where the controller aims to minimize the energy consumption and reduce large control actions. This can be beneficial in scenarios where excessive control efforts may result in mechanical stress, wear, or undesirable system behavior.
+
+By adjusting the weighting matrices Q and R, we can strike a balance between control effort and system performance. A higher weight on the control effort (higher R value) would lead to smoother control actions at the expense of potentially slower convergence. Conversely, a higher weight on the states (higher Q value) would prioritize reducing the error between the actual and desired states, potentially resulting in more aggressive control actions.
+
+The selection of appropriate LQR parameters depends on the specific system requirements, limitations, and desired trade-offs between performance and control effort. By carefully tuning these parameters, we can achieve the desired control behavior while considering system constraints and optimizing performance.
+
+\subsection{LQR Controller with Varying Cost Matrices}
+In this experiment, we implement a Linear Quadratic Regulator (LQR) controller with different weightings for the state and control cost matrices, $Q$ and $R$, respectively. Three scenarios are considered: normal weightings (identity matrices for $Q$ and $R$), increased state cost (ten times the identity for $Q$ and identity for $R$), and increased control cost (identity for $Q$ and ten times the identity for $R$).
+
+The state and control effort of the system are recorded and plotted over a duration of 30 seconds, with setpoints changing at 0s, 10s, and 20s.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{simulations/lqr_controller.png}
+\caption{State and control effort of the LQR controller for normal, high $Q$, and high $R$ cases.}
+\end{figure}
+
+The results show that increasing the weighting on the state cost matrix $Q$ results in an increase in control effort. The system responds aggressively to minimize deviations from the setpoint, which can result in high control effort and possibly saturation. Despite the increased control effort, the system does not necessarily reach the setpoint significantly faster.
+
+On the other hand, increasing the weighting on the control cost matrix $R$ results in a more conservative controller that attempts to minimize control effort, possibly at the expense of larger deviations from the setpoint. This might be desirable in scenarios where actuator limitations or energy consumption are of concern.
+
+A further exploration could involve adjusting the weightings in the $Q$ matrix for specific state variables. For instance, what would happen if we heavily weighting the position in the $Q$ matrix while setting other weights to zero?
+
+\subsection{LQR Controller with Varying Cost Matrices and Emphasis on Position}
+In the previous experiment, we implemented a Linear Quadratic Regulator (LQR) controller with different weightings for the state and control cost matrices, $Q$ and $R$, respectively. Extending this investigation, we now examine a scenario where the $Q$ matrix is manipulated to assign a significantly higher weight to the positional state, while the weights for other states (velocity, angle, angular velocity) are set to zero. 
+
+This adjustment causes the controller to focus primarily on minimizing positional error, often at the expense of other states. The outcome of this experiment, in terms of state and control effort, is illustrated below.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{simulations/lqr_controller_high_posiitonal_q.png}
+\caption{State and control effort of the LQR controller with high positional weight in $Q$.}
+\end{figure}
+
+As observed from the results, the settling time for position decreases significantly, indicating that the controller is able to reach the positional setpoint much faster than in previous scenarios. However, this comes at the cost of increased deviations in the other state variables. The aggressive control strategy to reduce positional error leads to larger fluctuations in velocity, angle, and angular velocity.
+
+These findings emphasize the trade-off involved in tuning the LQR controller and highlight the flexibility of the LQR framework. By adjusting the weights in the $Q$ and $R$ matrices, the controller's behavior can be tailored to specific requirements. For instance, in scenarios where positional accuracy is of paramount importance, a higher weight can be assigned to the position in the $Q$ matrix, as demonstrated in this experiment. Conversely, if it is crucial to control other state variables more precisely or to limit control effort, the respective weights in the $Q$ and $R$ matrices can be increased.
+
+\section{Conclusion}
+
+This paper provides an in-depth analysis and investigation of the implementation of Linear Quadratic Regulator (LQR) control for a cart-pole system. Various scenarios were examined to better understand the implications of the cost function matrices $Q$ and $R$ on system performance. Our results demonstrated the significant impact of these matrices on both settling time and control effort.
+
+A crucial observation from our experiments was the delicate trade-off between system performance and control effort. It was seen that simply increasing the weights in the $Q$ matrix doesn't necessarily lead to better system response, as it may result in excessive control effort. Therefore, the selection of these weights is an important aspect of designing an LQR controller, and it may require a certain degree of tuning and system knowledge.
+
+Detailed discussion, code, and animations for the results presented in this document \href{https://github.com/sezer-muhammed/LQR-Controller-Examples}{are available in our GitHub repository}. 
+
+
 
 \showmatmethods{} % Display the Materials and Methods section
+\section{Acknowledgments}
 
-\acknow{Please include your acknowledgments here, set in a single paragraph. Please do not include any acknowledgments in the Supporting Information, or anywhere else in the manuscript.}
+The authors would like to express their gratitude to the \href{https://ctms.engin.umich.edu/CTMS/index.php?example=InvertedPendulum&section=SystemModeling}{University of Michigan's Control Tutorials for MATLAB and Simulink (CTMS)} website for the system model and equations used in this paper. The website served as an invaluable resource, providing a detailed breakdown of the cart-pole system and contributing significantly to our understanding of the Linear Quadratic Regulator control technique implemented in this research.
+
+Special thanks to the contributors of the CTMS website for making the information publicly accessible and promoting a culture of shared learning within the field of control systems.
+
 
 \showacknow{} % Display the acknowledgments section
 
