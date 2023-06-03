@@ -31,8 +31,8 @@
 
 
 \begin{abstract}
-       In this easy-to-follow guide on the Linear Quadratic Regulator (LQR) controller, you'll learn about its practical and theoretical aspects. It equips you with the knowledge to not only run simulations but also to apply it in real-world scenarios. From understanding the underlying principles to discussing practical applications, and even a step-by-step demonstration via a computer simulation, this guide covers it all. Whether you're a beginner or an experienced practitioner, this guide aims to give you a complete picture of the LQR controller, and how it can be a game-changer in tackling complex control problems.
-\end{abstract}
+  This guide provides an easy-to-follow overview of the Linear Quadratic Regulator (LQR) controller. It covers both practical and theoretical aspects, allowing you to run simulations and apply it in real-world scenarios. The guide includes explanations of underlying principles, practical applications, and a step-by-step computer simulation demonstration. Whether you're a beginner or an experienced practitioner, this comprehensive guide aims to showcase how the LQR controller can effectively tackle complex control problems.
+  \end{abstract}
 
 \dates{\today}
 
@@ -64,19 +64,15 @@ The parameters used in LQR control design are primarily the weights in the quadr
 Let's delve into some specific applications and the parameters typically used:
 
 \begin{enumerate}
-       \item \textbf{Aerospace}: In the design of control systems for aircraft and spacecraft, the cost function might be weighted more heavily towards achieving a specific altitude or speed (system state), with less weight given to control effort. This is because precise control is often critical in these applications.
-       \item \textbf{Automotive}: In applications like cruise control systems and active suspension systems, the cost function might be weighted to balance ride comfort (a function of the vehicle's state) and fuel efficiency (a function of the control effort).
-       \item \textbf{Robotics}: In controlling robotic arms, unmanned aerial vehicles (drones), and autonomous vehicles, the weights in the cost function might be chosen to balance the precision of the task execution (system state) and energy efficiency (control effort).
-       \item \textbf{Energy Sector}: In optimizing the operation of power systems, such as power plants and electrical grids, the cost function might be weighted more heavily towards maintaining a stable power output (system state), with less weight given to the cost of operation (control effort).
-       \item \textbf{Economics}: In dynamic optimization problems, such as maximizing economic output while minimizing costs, the weights in the cost function would reflect the relative importance of these two factors.
+       \item \textbf{Aerospace}: Control systems for aircraft and spacecraft prioritize achieving specific system states like altitude or speed while minimizing control effort.
+       \item \textbf{Automotive}: Automotive applications such as cruise control and active suspension systems balance ride comfort and fuel efficiency.
+       \item \textbf{Robotics}: LQR control is used in robotic arms, drones, and autonomous vehicles to optimize task precision and energy efficiency.
+       \item \textbf{Energy Sector}: LQR optimizes power system operation by balancing stable power output and minimizing operational costs.
 \end{enumerate}
 
-In each of these applications, the specific weights used in the LQR design would depend on the specific requirements and constraints of the system and the task at hand. As we delve deeper into the theory and implementation of LQR in the following sections, you will gain a deeper understanding of how these parameters are chosen and how they influence the performance of the LQR controller.
+The weights in LQR design vary based on the system's requirements and constraints in each application. In the upcoming sections, we will explore the theory and implementation of LQR, providing insights into the selection of these parameters and their impact on the controller's performance.
 
-\subsection{Prerequisites and Assumptions}
-Before we dive deeper into the world of Linear Quadratic Regulator (LQR), it's important to understand the prerequisites and assumptions that underpin this control strategy. This will ensure that we have a solid foundation upon which to build our understanding of LQR.
-
-\subsubsection{Prerequisites:}
+\subsection{Prerequisites}
 Knowledge in the following areas is assumed for this course:
 
 \begin{itemize}
@@ -86,26 +82,13 @@ Knowledge in the following areas is assumed for this course:
        \item \textbf{Laplace Transforms}: Familiarity with Laplace transforms is helpful for understanding the analysis and design of control systems.
 \end{itemize}
 
-\subsubsection{Assumptions:}
-When working with LQR, we typically make the following assumptions:
-
-\begin{itemize}
-       \item \textbf{Linearity}: The system to be controlled is assumed to be linear, or at least well-approximated by a linear model around the operating point of interest.
-       \item \textbf{Quadratic Cost Function}: We assume that the cost to be minimized can be expressed as a quadratic function of the system states and control inputs.
-       \item \textbf{Full State Accessibility}: We assume that all states of the system are measurable and available for feedback. If this is not the case, techniques such as state estimation may be required.
-       \item \textbf{Deterministic System}: We assume that the system is deterministic, i.e., there are no random disturbances affecting the system. If such disturbances are present, a different approach, such as stochastic control, may be more appropriate.
-\end{itemize}
-
-With these prerequisites and assumptions in mind, we are now ready to embark on our journey into the fascinating world of LQR.
-
-
 \section{Example Problem}
 \subsection{Problem Statement: The Inverted Pendulum}
 Our challenge is the inverted pendulum problem, a topic that has intrigued researchers from the past to the present. With its canonical and nonlinear structure, the inverted pendulum problem has been a popular subject for control theories and applications.
 
-The inverted pendulum problem comes in various forms: the cart-pole inverted pendulum, the double pendulum cart-pole, the rotary inverted pendulum, and the mobile inverted pendulum. The balancing problems of these systems are widely covered in the literature and are still relevant today.
+In this study, the nonlinear mathematical model of the pendulum is linearized, and control is performed with full state feedback. 
 
-In this study, realized with a different approach to the balance problem of the inverted pendulum, the nonlinear mathematical model of the pendulum is linearized, and control is performed with full state feedback. When designing the controller, the goal is to keep the pendulum balanced vertically and bring the cart back to the starting point. You can see the pendulum system at figure \ref{pendulum}
+When designing the controller, the goal is to keep the pendulum balanced vertically and bring the cart back to the starting point. You can see the pendulum system at figure \ref{pendulum}
 \begin{figure}[h]
        \centering
        \includegraphics[width=0.9\linewidth]{problem/pendulum.png}
@@ -114,8 +97,6 @@ In this study, realized with a different approach to the balance problem of the 
 \end{figure}
 
 \subsection{Problem Analysis}
-The inverted pendulum problem is a classic in control theory due to its inherently unstable nature. It's a classic example of an unstable system that requires active control to maintain its equilibrium state. 
-
 The system consists of a cart of mass M that can move horizontally and a pendulum of length l and mass m attached to the cart. The pendulum is free to rotate and its angle with the vertical, denoted by $\theta$, is a critical parameter. The pendulum is in its unstable equilibrium position when $\theta$ is 180 degrees, i.e., when it's perfectly vertical. 
 
 The control input to the system is a force F applied horizontally to the cart. The goal is to adjust this force to keep the pendulum upright, i.e., to keep $\theta$ as close to 180 degrees as possible. 
@@ -125,8 +106,6 @@ However, the system is nonlinear and underactuated, meaning it has more degrees 
 Moreover, the system is highly sensitive to disturbances and changes in the initial conditions. A small push to the pendulum or a small change in the initial angle can cause the pendulum to fall over. 
 
 In the next section, we will define the specific goals and objectives for the control problem.
-
-
 
 \subsection{Goals and Objectives}
 In this section, we will define the specific goals and objectives for the control of the inverted pendulum system. Our aim is to control both the pendulum's angle $\theta$ and the cart's position $x$.
@@ -145,27 +124,19 @@ In summary, our goal is to design a controller that can meet these performance r
 
 \section{Solution! LQR}
 \subsection{Introduction to LQR as a Solution}
-Having defined our problem and set our performance requirements, we now turn to the task of designing a controller that can meet these requirements. For this, we will use the Linear Quadratic Regulator (LQR), a powerful method for designing optimal controllers for linear systems.
-
-The LQR approach is based on the principle of minimizing a quadratic cost function, which represents a certain "cost" associated with the system's behavior. This cost function is typically a weighted sum of the system states and control inputs, reflecting the trade-off between system performance (which we want to maximize) and control effort (which we want to minimize).
-
-By minimizing this cost function, the LQR can determine the optimal control law for a given system. This control law specifies how the control input should be adjusted based on the current system state to minimize the cost.
-
-In the context of our inverted pendulum problem, the LQR will determine how the force F applied to the cart should be adjusted based on the current position of the cart and the angle of the pendulum, in order to keep the pendulum upright and control the position of the cart, while minimizing the use of force.
-
-In the following sections, we will delve deeper into the theory behind LQR and how to implement it for our problem.
+We will design a controller for our inverted pendulum system to meet the performance requirements. The chosen method is the Linear Quadratic Regulator (LQR), which optimally designs controllers for linear systems. The LQR minimizes a quadratic cost function by adjusting the control input based on the system state. This allows us to keep the pendulum upright, control the cart's position, and minimize control effort. In the upcoming sections, we will explore the theory and implementation of LQR for our problem.
 
 \subsection{Benefits of Using LQR}
 The Linear Quadratic Regulator (LQR) offers several benefits that make it a powerful and popular method for control system design:
 
 \begin{itemize}
-    \item \textbf{Optimality}: LQR provides an optimal solution in terms of minimizing a quadratic cost function. This means it finds the best possible control law under the given cost function and system dynamics.
-    \item \textbf{Flexibility}: The cost function in LQR can be tuned by adjusting the weights of the state and control variables. This allows us to balance the trade-off between system performance and control effort according to the specific requirements of our system.
-    \item \textbf{Robustness}: LQR is robust to small perturbations around the operating point. This means it can handle small disturbances and model uncertainties effectively.
-    \item \textbf{Stability}: Under certain conditions (like controllability of the system), LQR guarantees stability of the closed-loop system. This is a crucial property for any control system.
+    \item \textbf{Optimality}: LQR minimizes a quadratic cost function, providing an optimal control law for the system.
+    \item \textbf{Flexibility}: The weights in the cost function can be adjusted to balance system performance and control effort as per specific requirements.
+    \item \textbf{Robustness}: LQR effectively handles small disturbances and model uncertainties.
+    \item \textbf{Stability}: LQR guarantees system stability under certain conditions, ensuring reliable control.
 \end{itemize}
 
-These benefits make LQR a suitable choice for our inverted pendulum problem. By optimally balancing the pendulum and controlling the position of the cart, while minimizing the use of force, LQR can help us meet our performance requirements.
+LQR is well-suited for our inverted pendulum problem. It optimally balances the pendulum, controls the cart's position, and minimizes force usage, aligning with our performance requirements.
 
 \subsection{Limitations of LQR}
 While the Linear Quadratic Regulator (LQR) is a powerful method for control system design, it's important to be aware of its limitations:
@@ -494,15 +465,15 @@ From the main problem, the dynamic equations of the inverted pendulum system in 
 \newpage
 
 \section{System Simulations}
-In our study, we utilize Python, a powerful high-level programming language, to simulate our system. Through our simulations, we are able to gain insights into the behavior of the system given different initial conditions.
+We employ Python, a powerful high-level programming language, to simulate our system and gain insights into its behavior under different initial conditions.
 
-In the first scenario, we consider initial conditions where every parameter is zero. Under these conditions, the system remains in a state of steady-state equilibrium. This result is to be expected, as the system parameters have not been perturbed, and so there is no mechanism to initiate movement or change. The steady-state equilibrium condition is a crucial insight, demonstrating that in the absence of any external stimulus or internal perturbations, the system remains stable.
+In the first scenario, where all parameters are set to zero, the system remains in a steady-state equilibrium. This outcome is expected since no perturbations or stimuli are introduced, indicating system stability.
 
-In a second scenario, we introduce a slight disturbance in the starting angle. With this small change, the behavior of the system is drastically different. The effect of this slight change in the initial angle compounds over time, leading to an exponential increase. This is a characteristic behavior of unstable systems. 
+In the second scenario, a small disturbance is introduced in the initial angle. This slight change leads to a significant variation in the system's behavior. Over time, the effect of the initial angle disturbance amplifies exponentially, characteristic of unstable systems.
 
-While the simulation predicts the effect to grow towards infinity, it is critical to remember that our model is a linearized approximation of the true system. We linearized the system around the perpendicular position, which serves as the equilibrium point. As the system deviates farther from this equilibrium, the linear approximation becomes less accurate, and thus the behavior predicted by the model—unbounded growth—would not occur in reality. Instead, we would expect the system to oscillate.
+It is crucial to note that the simulation predicts unbounded growth, but this is limited to the linearized approximation used in our model. As the system deviates further from the equilibrium, the linear approximation becomes less accurate. In reality, the system would exhibit oscillations rather than unbounded growth.
 
-This discrepancy underscores the limitations of linear models and the importance of understanding the system's true non-linear dynamics. However, the advantage of such models is their simplicity and tractability, which make them a powerful tool for gaining initial insights and for control design, especially for systems that operate around a specific operating point.
+This highlights the limitations of linear models and emphasizes the importance of understanding the true non-linear dynamics of the system. Nonetheless, linear models provide valuable insights and are effective for control design, especially when the system operates near a specific operating point.
 
 As shown in Figure \ref{fig:system_sim}, the system simulation results illustrate these points clearly.
 
@@ -515,11 +486,7 @@ As shown in Figure \ref{fig:system_sim}, the system simulation results illustrat
 
 \section{Implementation of LQR Controller}
 
-The LQR gain matrix $K$ is calculated by using the Python Control Systems Library function \texttt{control.lqr}. This function solves the continuous-time Algebraic Riccati equation (CARE) or discrete-time Algebraic Riccati equation (DARE), based on the nature of the system. The function \texttt{control.lqr} requires the state-space model of the system, and the $Q$ and $R$ matrices, as inputs.
-
-With the gain matrix $K$ obtained, the control law $u = -Kx$ is implemented. The control law is used to update the control inputs at each time step in the simulation, which in turn influences the system's state evolution.
-
-Figure \ref{fig:lqr_response} illustrates the response of the system with the LQR controller. As we can see, the LQR controller effectively stabilizes the pendulum in the upright position.
+The LQR gain matrix, $K$, is computed using the \texttt{control.lqr} function from the Python Control Systems Library. This function solves the continuous or discrete Algebraic Riccati equation based on the system type. With $K$ obtained, the control law $u = -Kx$ is implemented, updating the control inputs at each time step. The LQR controller successfully stabilizes the pendulum in the upright position, as shown in Figure \ref{fig:lqr_response}.
 
 \begin{figure}[h]
 \centering
@@ -559,11 +526,7 @@ As mentioned earlier, changing these matrices affects the control behavior of th
     \label{fig:control_effort}
 \end{figure}
 
-From Figure \ref{fig:control_effort}, we observe that the control effort varies with different LQR parameter settings. A smaller control effort signifies a less aggressive control action, where the controller aims to minimize the energy consumption and reduce large control actions. This can be beneficial in scenarios where excessive control efforts may result in mechanical stress, wear, or undesirable system behavior.
-
-By adjusting the weighting matrices Q and R, we can strike a balance between control effort and system performance. A higher weight on the control effort (higher R value) would lead to smoother control actions at the expense of potentially slower convergence. Conversely, a higher weight on the states (higher Q value) would prioritize reducing the error between the actual and desired states, potentially resulting in more aggressive control actions.
-
-The selection of appropriate LQR parameters depends on the specific system requirements, limitations, and desired trade-offs between performance and control effort. By carefully tuning these parameters, we can achieve the desired control behavior while considering system constraints and optimizing performance.
+Figure \ref{fig:control_effort} demonstrates how different LQR parameter settings affect the control effort. Smaller control efforts indicate less aggressive control actions, prioritizing energy efficiency and minimizing mechanical stress. Adjusting the weighting matrices Q and R allows us to balance control effort and system performance. Higher R values result in smoother control actions but potentially slower convergence, while higher Q values prioritize reducing state error and may lead to more aggressive control actions. Choosing the appropriate LQR parameters depends on system requirements, constraints, and desired trade-offs between performance and control effort. Tuning these parameters enables us to achieve the desired control behavior while optimizing system performance and considering limitations.
 
 \subsection{LQR Controller with Varying Cost Matrices}
 In this experiment, we implement a Linear Quadratic Regulator (LQR) controller with different weightings for the state and control cost matrices, $Q$ and $R$, respectively. Three scenarios are considered: normal weightings (identity matrices for $Q$ and $R$), increased state cost (ten times the identity for $Q$ and identity for $R$), and increased control cost (identity for $Q$ and ten times the identity for $R$).
@@ -576,11 +539,9 @@ The state and control effort of the system are recorded and plotted over a durat
 \caption{State and control effort of the LQR controller for normal, high $Q$, and high $R$ cases.}
 \end{figure}
 
-The results show that increasing the weighting on the state cost matrix $Q$ results in an increase in control effort. The system responds aggressively to minimize deviations from the setpoint, which can result in high control effort and possibly saturation. Despite the increased control effort, the system does not necessarily reach the setpoint significantly faster.
+Increasing the weighting on the state cost matrix, Q, leads to a more aggressive response with higher control effort. However, it may not significantly improve the system's convergence to the setpoint. Conversely, increasing the weighting on the control cost matrix, R, results in a more conservative controller that minimizes control effort at the potential expense of larger deviations from the setpoint. This can be advantageous when considering actuator limitations or energy consumption.
 
-On the other hand, increasing the weighting on the control cost matrix $R$ results in a more conservative controller that attempts to minimize control effort, possibly at the expense of larger deviations from the setpoint. This might be desirable in scenarios where actuator limitations or energy consumption are of concern.
-
-A further exploration could involve adjusting the weightings in the $Q$ matrix for specific state variables. For instance, what would happen if we heavily weighting the position in the $Q$ matrix while setting other weights to zero?
+Further exploration could involve adjusting the weightings in the Q matrix for specific state variables. For example, heavily weighting position in the Q matrix while setting other weights to zero would reveal the effect of prioritizing position control over other variables.
 
 \subsection{LQR Controller with Varying Cost Matrices and Emphasis on Position}
 In the previous experiment, we implemented a Linear Quadratic Regulator (LQR) controller with different weightings for the state and control cost matrices, $Q$ and $R$, respectively. Extending this investigation, we now examine a scenario where the $Q$ matrix is manipulated to assign a significantly higher weight to the positional state, while the weights for other states (velocity, angle, angular velocity) are set to zero. 
@@ -593,9 +554,7 @@ This adjustment causes the controller to focus primarily on minimizing positiona
 \caption{State and control effort of the LQR controller with high positional weight in $Q$.}
 \end{figure}
 
-As observed from the results, the settling time for position decreases significantly, indicating that the controller is able to reach the positional setpoint much faster than in previous scenarios. However, this comes at the cost of increased deviations in the other state variables. The aggressive control strategy to reduce positional error leads to larger fluctuations in velocity, angle, and angular velocity.
-
-These findings emphasize the trade-off involved in tuning the LQR controller and highlight the flexibility of the LQR framework. By adjusting the weights in the $Q$ and $R$ matrices, the controller's behavior can be tailored to specific requirements. For instance, in scenarios where positional accuracy is of paramount importance, a higher weight can be assigned to the position in the $Q$ matrix, as demonstrated in this experiment. Conversely, if it is crucial to control other state variables more precisely or to limit control effort, the respective weights in the $Q$ and $R$ matrices can be increased.
+By assigning a higher weight to the positional state in the $Q$ matrix while setting other state weights to zero, the LQR controller achieves faster convergence to the positional setpoint. However, this improvement comes at the expense of increased deviations in other state variables. These findings highlight the trade-off involved in tuning the LQR controller and showcase its flexibility in adapting to specific requirements. By adjusting the weights in the $Q$ and $R$ matrices, the controller's behavior can be tailored to prioritize positional accuracy or other state variables, as needed.
 
 \section{Conclusion}
 
